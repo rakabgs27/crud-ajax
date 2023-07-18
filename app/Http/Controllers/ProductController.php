@@ -13,6 +13,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -23,16 +24,28 @@ class ProductController extends Controller
                     'products.qty_product as qty_product',
                     'products.harga_product as harga_product',
                     'categories.nama_category as nama_category'
-                )
-                ->get();
+                );
 
-            return DataTables::of($products)
-                ->addIndexColumn()
-                ->make(true);
+            return DataTables::eloquent($products)
+                ->addColumn('DT_RowIndex', function ($product) {
+                    static $index = 0;
+                    return ++$index;
+                })
+                ->filter(function ($query) use ($request) {
+                    if ($request->has('search') && !empty($request->input('search.value'))) {
+                        $value = $request->input('search.value');
+                        $query->where('products.nama_product', 'like', '%' . $value . '%')
+                            ->orWhere('categories.nama_category', 'like', '%' . $value . '%')
+                            ->orWhere('products.qty_product', 'like', '%' . $value . '%')
+                            ->orWhere('products.harga_product', 'like', '%' . $value . '%');
+                    }
+                })
+                ->toJson();
         }
 
         return view('products.index');
     }
+
 
     /**
      * Show the form for creating a new resource.

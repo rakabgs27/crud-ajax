@@ -40,13 +40,13 @@
             </div>
         </div>
     </section>
-    <!-- Add Data Modal -->
+    <!-- Add New Data Modal -->
     <div class="modal fade" id="addDataModal" tabindex="-1" role="dialog" aria-labelledby="addDataModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addDataModalLabel">Add New Data</h5>
+                    <h5 class="modal-title" id="addDataModalLabel">Add New Data Product</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -91,6 +91,23 @@
             </div>
         </div>
     </div>
+    <!-- View Data Modal -->
+    <div class="modal fade" id="viewDataModal" tabindex="-1" role="dialog" aria-labelledby="viewDataModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewDataModalLabel">View Data Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="viewDataContent">
+                    {{-- Data akan tertampil disini --}}
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('customStyle')
@@ -130,7 +147,10 @@
                     },
                     {
                         "data": "harga_product",
-                        "searchable": true
+                        "searchable": true,
+                        "render": function(data, type, row) {
+                            return "Rp. " + data;
+                        }
                     },
                     {
                         "data": null,
@@ -139,8 +159,9 @@
                         "render": function(data, type, row) {
                             var editButton = '<a href="" class="btn btn-sm btn-warning">Edit</a>';
                             editButton = editButton.replace(':id', row.id);
-                            var viewButton = '<a href="" class="btn btn-sm btn-info">View</a>';
-                            viewButton = viewButton.replace(':id', row.id);
+                            var viewButton =
+                                '<button class="btn btn-sm btn-info btn-view" data-id="' + row.id +
+                                '" data-toggle="modal" data-target="#viewDataModal">View</button>';
                             var deleteButton =
                                 '<button class="btn btn-sm btn-danger btn-delete" data-id="' + row
                                 .id + '">Delete</button>';
@@ -161,6 +182,27 @@
         $(document).ready(function() {
             $(document).on('click', '#addDataButton', function() {
                 $('#addDataModal').modal('show');
+            });
+        });
+    </script>
+    <script>
+        $(document).on('click', '.btn-view', function() {
+            var productId = $(this).data('id');
+            $.ajax({
+                url: "{{ route('products.show', ':id') }}".replace(':id', productId),
+                method: 'GET',
+                success: function(response) {
+                    var productData = response.data;
+                    var html = '<div>' +
+                        '<h5>Nama Produk: ' + productData.nama_product + '</h5>' +
+                        '<h5>Kategori: ' + productData.nama_category + '</h5>' +
+                        '<h5>Jumlah: ' + productData.qty_product + '</h5>' +
+                        '<h5>Harga: Rp. ' + productData.harga_product + '</h5>' +
+                        '</div>';
+
+                    $('#viewDataContent').html(html);
+                    $('#viewDataModal').modal('show');
+                }
             });
         });
     </script>

@@ -72,10 +72,28 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(product $product)
+    public function show(Product $product)
     {
-        //
+        $product = Product::leftJoin('categories', 'products.id_category', '=', 'categories.id')
+            ->select(
+                'products.id',
+                'products.nama_product as nama_product',
+                'products.qty_product as qty_product',
+                'products.harga_product as harga_product',
+                'categories.nama_category as nama_category'
+            )
+            ->findOrFail($product->id);
+
+        return response()->json([
+            'data' => [
+                'nama_product' => $product->nama_product,
+                'nama_category' => $product->nama_category,
+                'qty_product' => $product->qty_product,
+                'harga_product' => $product->harga_product
+            ]
+        ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.

@@ -60,9 +60,15 @@ class ProductController extends Controller
      */
     public function store(StoreproductRequest $request)
     {
-        //
-    }
+        $product = new Product;
+        $product->nama_product = $request->nama_product;
+        $product->id_category = $request->nama_category;
+        $product->qty_product = $request->qty_product;
+        $product->harga_product = $request->harga_product;
+        $product->save();
 
+        return redirect()->route('products.index')->with('success', 'Product created successfully!');
+    }
     /**
      * Display the specified resource.
      */

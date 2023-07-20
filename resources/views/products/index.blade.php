@@ -239,7 +239,10 @@
     <script>
         $(document).ready(function() {
             $(document).on('click', '#addDataButton', function() {
-                $('#addDataModal').modal('show');
+                // Empty the form fields
+                $('#addDataModal input').val('');
+                $('#addDataModal select').prop('selectedIndex', 0);
+                $('#addDataModal').modal('show');   
             });
         });
     </script>
@@ -350,6 +353,7 @@
         $('#updateBtn').click(function(e) {
             e.preventDefault();
             $('#editDataForm').submit();
+            $('#productTable').DataTable().ajax.reload();
         });
     </script>
 @endpush

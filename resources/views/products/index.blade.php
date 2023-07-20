@@ -108,6 +108,26 @@
             </div>
         </div>
     </div>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Delete Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this product?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="deleteButton">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('customStyle')
@@ -203,6 +223,41 @@
                     $('#viewDataContent').html(html);
                     $('#viewDataModal').modal('show');
                 }
+            });
+        });
+    </script>
+     <script>
+        $(document).ready(function() {
+            // Handle delete button click
+            $(document).on('click', '.btn-delete', function() {
+                var productId = $(this).data('id');
+                $('#deleteButton').data('product-id', productId); // Set the product ID to the delete button's data attribute
+                $('#deleteModal').modal('show');
+            });
+
+            // Handle delete confirmation
+            $('#deleteButton').click(function() {
+                var productId = $(this).data('product-id');
+
+                // Send AJAX request to delete the product
+                $.ajax({
+                    url: "/products/" + productId,
+                    method: 'DELETE',
+                    success: function(response) {
+                        // Hide the modal
+                        $('#deleteModal').modal('hide');
+
+                        // Display success message or perform any other action
+                        alert(response.message);
+
+                        // You can also reload the DataTable to update the table after deletion
+                        $('#productTable').DataTable().ajax.reload();
+                    },
+                    error: function(xhr) {
+                        // Handle error response
+                        alert('Error: ' + xhr.responseText);
+                    }
+                });
             });
         });
     </script>

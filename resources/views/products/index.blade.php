@@ -142,14 +142,14 @@
                 </div>
                 <div class="modal-body">
                     <!-- Edit Data Form -->
-                    <form id="editDataForm" action="" method="PUT">
+                    <form id="editDataForm" action="#" method="POST" data-product-id="">
                         <div class="form-group">
                             <label for="nama_product">Nama Produk</label>
                             <input type="text" class="form-control" id="nama_product" name="nama_product" required>
                         </div>
                         <div class="form-group">
-                            <label for="nama_category">Kategori</label>
-                            <select class="form-control" id="nama_category" name="nama_category" required>
+                            <label for="id_category">Kategori</label>
+                            <select class="form-control" id="id_category" name="id_category" required>
                             </select>
                         </div>
                         <div class="form-group">
@@ -160,7 +160,7 @@
                             <label for="harga">Harga</label>
                             <input type="number" class="form-control" id="harga_product" name="harga_product" required>
                         </div>
-                        <input type="hidden" name="_method" value="PUT">
+                        {{-- <input type="hidden" name="_method" value="PUT"> --}}
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -294,21 +294,20 @@
             $(document).on('click', '.btn-edit', function() {
                 var productId = $(this).data('id');
                 var editUrl = "{{ route('products.edit', ':id') }}".replace(':id', productId);
+                $('#editDataForm').data('product-id', productId);
                 $.ajax({
                     url: editUrl,
                     method: 'GET',
                     success: function(response) {
-
-                        //Kosongkan elemen <select>
-                        $('#nama_category.form-control').empty();
-
-                        // Iterasi melalui kategori dan tambahkan elemen <option> untuk setiap kategori
-                        $.each(response.category, function(index, category) {
-                            console.log(response.category.nama_category);
-                            // $('#nama_category.form-control').append($('<option>', {
-                            //     value: category.id,
-                            //     text: category.nama_category
-                            // }));
+                        $('#editDataForm').attr('action',
+                            "{{ route('products.update', ':id') }}".replace(':id',
+                                productId));
+                        $('#id_category.form-control').empty();
+                        $.each(response.categories, function(index, category) {
+                            $('#id_category.form-control').append($('<option>', {
+                                value: category.id,
+                                text: category.nama_category
+                            }));
                         });
 
                         $('#nama_product.form-control').val(response.data.nama_product);
@@ -323,6 +322,34 @@
                     }
                 });
             });
+        });
+    </script>
+    <script>
+        $('#editDataForm').on('submit', function(e) {
+            e.preventDefault();
+
+            var productId = $(this).data('product-id');
+            var url = "{{ route('products.update', ':id') }}".replace(':id', productId);
+            var formData = $(this).serialize();
+            console.log(formData);
+
+            $.ajax({
+                url: url,
+                type: 'POST', // Change this to POST
+                data: formData + "&_method=PUT", // Add the _method field
+                success: function(response) {
+                    console.log(response);
+                    $('#editDataModal').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+        $('#updateBtn').click(function(e) {
+            e.preventDefault();
+            $('#editDataForm').submit();
         });
     </script>
 @endpush

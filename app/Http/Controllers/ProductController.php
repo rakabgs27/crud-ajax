@@ -111,8 +111,13 @@ class ProductController extends Controller
             )
             ->findOrFail($product->id);
 
-        $category = Category::all();
-
+        $categories = Category::all()->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'nama_category' => $category->nama_category
+            ];
+        });
+        // $categories = Category::all();
         return response()->json([
             'data' => [
                 'nama_product' => $product->nama_product,
@@ -121,10 +126,7 @@ class ProductController extends Controller
                 'harga_product' => $product->harga_product
             ],
 
-            'category' =>[
-                // 'id' => $category->id,
-                'nama_category' => $category->nama_kategori
-            ]
+            'categories' => $categories
         ]);
     }
 
@@ -133,9 +135,16 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateproductRequest $request, product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $validated = $request->validated();
+
+        $product->update($validated);
+
+        return response()->json([
+            'message' => 'Product updated successfully',
+            'product' => $product
+        ]);
     }
 
     /**

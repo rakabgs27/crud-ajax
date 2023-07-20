@@ -56,11 +56,11 @@
                     <form id="addDataForm" action="{{ route('products.store') }}" method="POST">
                         <div class="form-group">
                             <label for="nama_product">Nama Produk</label>
-                            <input type="text" class="form-control" id="nama_product" name="nama_product" required>
+                            <input type="text" class="form-control" id="nama_product" name="nama_product">
                         </div>
                         <div class="form-group">
                             <label for="nama_category">Kategori</label>
-                            <select class="form-control" id="nama_category" name="nama_category" required>
+                            <select class="form-control" id="nama_category" name="nama_category">
                                 <option value="1">Electronics</option>
                                 <option value="2">Fashion</option>
                                 <option value="3">Home</option>
@@ -75,11 +75,11 @@
                         </div>
                         <div class="form-group">
                             <label for="jumlah">Jumlah</label>
-                            <input type="number" class="form-control" id="qty_product" name="qty_product" required>
+                            <input type="number" class="form-control" id="qty_product" name="qty_product">
                         </div>
                         <div class="form-group">
                             <label for="harga">Harga</label>
-                            <input type="number" class="form-control" id="harga_product" name="harga_product" required>
+                            <input type="number" class="form-control" id="harga_product" name="harga_product">
                         </div>
                         <input type="hidden" name="_method" value="POST">
                     </form>
@@ -109,7 +109,8 @@
         </div>
     </div>
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -124,6 +125,47 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-danger" id="deleteButton">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Data Modal -->
+    <div class="modal fade" id="editDataModal" tabindex="-1" role="dialog" aria-labelledby="editDataModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editDataModalLabel">Edit Data Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Edit Data Form -->
+                    <form id="editDataForm" action="" method="PUT">
+                        <div class="form-group">
+                            <label for="nama_product">Nama Produk</label>
+                            <input type="text" class="form-control" id="nama_product" name="nama_product" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nama_category">Kategori</label>
+                            <select class="form-control" id="nama_category" name="nama_category" required>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="jumlah">Jumlah</label>
+                            <input type="number" class="form-control" id="qty_product" name="qty_product" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="harga">Harga</label>
+                            <input type="number" class="form-control" id="harga_product" name="harga_product" required>
+                        </div>
+                        <input type="hidden" name="_method" value="PUT">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="updateBtn">Update</button>
                 </div>
             </div>
         </div>
@@ -177,8 +219,9 @@
                         "orderable": false,
                         "searchable": false,
                         "render": function(data, type, row) {
-                            var editButton = '<a href="" class="btn btn-sm btn-warning">Edit</a>';
-                            editButton = editButton.replace(':id', row.id);
+                            var editButton =
+                                '<button class="btn btn-sm btn-warning btn-edit" data-id="' + row
+                                .id + '">Edit</button>';
                             var viewButton =
                                 '<button class="btn btn-sm btn-info btn-view" data-id="' + row.id +
                                 '" data-toggle="modal" data-target="#viewDataModal">View</button>';
@@ -191,11 +234,6 @@
                     }
                 ]
             });
-        });
-    </script>
-    <script>
-        $(document).on('click', '.btn-delete', function() {
-            var productId = $(this).data('id');
         });
     </script>
     <script>
@@ -226,36 +264,62 @@
             });
         });
     </script>
-     <script>
+    <script>
         $(document).ready(function() {
-            // Handle delete button click
             $(document).on('click', '.btn-delete', function() {
                 var productId = $(this).data('id');
-                $('#deleteButton').data('product-id', productId); // Set the product ID to the delete button's data attribute
+                $('#deleteButton').data('product-id', productId);
                 $('#deleteModal').modal('show');
             });
 
-            // Handle delete confirmation
             $('#deleteButton').click(function() {
                 var productId = $(this).data('product-id');
-
-                // Send AJAX request to delete the product
                 $.ajax({
                     url: "/products/" + productId,
                     method: 'DELETE',
                     success: function(response) {
-                        // Hide the modal
+
                         $('#deleteModal').modal('hide');
 
-                        // Display success message or perform any other action
                         alert(response.message);
 
-                        // You can also reload the DataTable to update the table after deletion
                         $('#productTable').DataTable().ajax.reload();
                     },
-                    error: function(xhr) {
-                        // Handle error response
-                        alert('Error: ' + xhr.responseText);
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.btn-edit', function() {
+                var productId = $(this).data('id');
+                var editUrl = "{{ route('products.edit', ':id') }}".replace(':id', productId);
+                $.ajax({
+                    url: editUrl,
+                    method: 'GET',
+                    success: function(response) {
+
+                        //Kosongkan elemen <select>
+                        $('#nama_category.form-control').empty();
+
+                        // Iterasi melalui kategori dan tambahkan elemen <option> untuk setiap kategori
+                        $.each(response.category, function(index, category) {
+                            console.log(response.category.nama_category);
+                            // $('#nama_category.form-control').append($('<option>', {
+                            //     value: category.id,
+                            //     text: category.nama_category
+                            // }));
+                        });
+
+                        $('#nama_product.form-control').val(response.data.nama_product);
+                        $('#qty_product.form-control').val(response.data.qty_product);
+                        $('#harga_product.form-control').val(response.data.harga_product);
+
+                        $('#editDataModal').modal('show');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr
+                            .responseText); // Check error message in the browser console
                     }
                 });
             });

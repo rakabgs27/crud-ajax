@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Http\Requests\StoreproductRequest;
 use App\Http\Requests\UpdateproductRequest;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use DataTables;
 
@@ -98,10 +99,36 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(product $product)
+    public function edit(Product $product)
     {
-        //
+        $product = Product::leftJoin('categories', 'products.id_category', '=', 'categories.id')
+            ->select(
+                'products.id',
+                'products.nama_product as nama_product',
+                'products.qty_product as qty_product',
+                'products.harga_product as harga_product',
+                'categories.nama_category as nama_category'
+            )
+            ->findOrFail($product->id);
+
+        $category = Category::all();
+
+        return response()->json([
+            'data' => [
+                'nama_product' => $product->nama_product,
+                // 'nama_category' => $product->id,
+                'qty_product' => $product->qty_product,
+                'harga_product' => $product->harga_product
+            ],
+
+            'category' =>[
+                // 'id' => $category->id,
+                'nama_category' => $category->nama_kategori
+            ]
+        ]);
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -114,7 +141,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(product $product)
+    public function destroy(Product $product)
     {
         $product->delete();
 

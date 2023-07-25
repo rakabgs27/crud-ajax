@@ -259,7 +259,7 @@
                     error: function(xhr) {
                         if (xhr.status === 422) {
                             var errors = xhr.responseJSON.errors;
-                            clearErrors(); // Clear previous errors
+                            clearErrors();
                             $.each(errors, function(field, messages) {
                                 var input = $('[name="' + field + '"]');
                                 input.addClass('is-invalid');
@@ -291,7 +291,7 @@
                 $('#addDataForm')[0].reset();
                 resetIdCategory();
                 $('#addDataModal').modal('show');
-                clearErrors(); // Clear previous errors
+                clearErrors();
             });
 
             function clearErrors() {
@@ -299,7 +299,6 @@
                 $('.is-invalid').removeClass('is-invalid');
             }
 
-            // Clear invalid feedback when modal is closed
             $('#addDataModal').on('hidden.bs.modal', function() {
                 clearErrors();
             });
@@ -351,26 +350,11 @@
     </script>
     <script>
         $(document).ready(function() {
-            // function resetIdCategory() {
-            //     $.ajax({
-            //         url: "{{ route('categories.get') }}",
-            //         method: 'GET',
-            //         success: function(data) {
-            //             $('#id_category.form-control').empty();
-            //             $.each(data, function(key, value) {
-            //                 $('#id_category.form-control').append('<option value="' + value.id +
-            //                     '">' + value.nama_category + '</option>');
-            //             });
-            //         }
-            //     });
-            // }
 
             $(document).on('click', '.btn-edit', function() {
                 var productId = $(this).data('id');
                 var editUrl = "{{ route('products.edit', ':id') }}".replace(':id', productId);
                 $('#editDataForm').data('product-id', productId);
-
-                // resetIdCategory();
 
                 $.ajax({
                     url: editUrl,
@@ -416,8 +400,8 @@
 
             $.ajax({
                 url: url,
-                type: 'POST', // Change this to POST
-                data: formData + "&_method=PUT", // Add the _method field
+                type: 'POST',
+                data: formData + "&_method=PUT",
                 success: function(response) {
                     console.log(response);
                     $('#editDataModal').modal('hide');

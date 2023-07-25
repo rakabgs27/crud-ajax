@@ -107,7 +107,8 @@ class ProductController extends Controller
                 'products.nama_product as nama_product',
                 'products.qty_product as qty_product',
                 'products.harga_product as harga_product',
-                'categories.nama_category as nama_category'
+                'categories.nama_category as nama_category',
+                'products.id_category as id_category'
             )
             ->findOrFail($product->id);
 
@@ -117,11 +118,11 @@ class ProductController extends Controller
                 'nama_category' => $category->nama_category
             ];
         });
-        // $categories = Category::all();
+
         return response()->json([
             'data' => [
                 'nama_product' => $product->nama_product,
-                // 'nama_category' => $product->id,
+                'id_category' => $product->id_category,
                 'qty_product' => $product->qty_product,
                 'harga_product' => $product->harga_product
             ],

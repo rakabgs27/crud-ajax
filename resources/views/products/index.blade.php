@@ -248,8 +248,7 @@
                     type: "POST",
                     url: url,
                     data: form.serialize(),
-                    success: function(data)
-                    {
+                    success: function(data) {
                         alert("Data added successfully");
                         $('#addDataModal').modal('hide');
                     },
@@ -263,7 +262,6 @@
             });
         });
     </script>
-
     <script>
         $(document).on('click', '.btn-view', function() {
             var productId = $(this).data('id');
@@ -325,10 +323,16 @@
                                 productId));
                         $('#id_category.form-control').empty();
                         $.each(response.categories, function(index, category) {
-                            $('#id_category.form-control').append($('<option>', {
+                            var option = $('<option>', {
                                 value: category.id,
                                 text: category.nama_category
-                            }));
+                            });
+
+                            if (category.id == response.data.id_category) {
+                                option.attr('selected', 'selected');
+                            }
+
+                            $('#id_category.form-control').append(option);
                         });
 
                         $('#nama_product.form-control').val(response.data.nama_product);
@@ -339,7 +343,7 @@
                     },
                     error: function(xhr, status, error) {
                         console.error(xhr
-                            .responseText); // Check error message in the browser console
+                        .responseText); // Check error message in the browser console
                     }
                 });
             });

@@ -47,6 +47,12 @@ class ProductController extends Controller
         return view('products.index');
     }
 
+    public function getCategories()
+    {
+        $categories = Category::all();
+        return response()->json($categories);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -63,13 +69,19 @@ class ProductController extends Controller
     {
         $product = new Product;
         $product->nama_product = $request->nama_product;
-        $product->id_category = $request->nama_category;
+        $product->id_category = $request->id_category; // Change from nama_category to id_category
         $product->qty_product = $request->qty_product;
         $product->harga_product = $request->harga_product;
         $product->save();
 
+        if($request->ajax()){
+            return response()->json(['success' => 'Product created successfully!'], 200);
+        }
+
         return redirect()->route('products.index')->with('success', 'Product created successfully!');
     }
+
+
     /**
      * Display the specified resource.
      */

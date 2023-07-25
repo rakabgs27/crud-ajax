@@ -29,7 +29,7 @@
                                             <th>Kategori</th>
                                             <th>Jumlah</th>
                                             <th>Harga</th>
-                                            <th>Action</th>
+                                            <th class="text-right">Action</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -59,18 +59,9 @@
                             <input type="text" class="form-control" id="nama_product" name="nama_product">
                         </div>
                         <div class="form-group">
-                            <label for="nama_category">Kategori</label>
-                            <select class="form-control" id="nama_category" name="nama_category">
-                                <option value="1">Electronics</option>
-                                <option value="2">Fashion</option>
-                                <option value="3">Home</option>
-                                <option value="4">Sports</option>
-                                <option value="5">Books</option>
-                                <option value="6">Beauty</option>
-                                <option value="7">Toys</option>
-                                <option value="8">Food</option>
-                                <option value="9">Health</option>
-                                <option value="10">Automotive</option>
+                            <label for="id_category">Kategori</label>
+                            <select class="form-control select2" id="id_category" name="id_category">
+                                <option value="">Pilih Jenis Kategori</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -149,7 +140,7 @@
                         </div>
                         <div class="form-group">
                             <label for="id_category">Kategori</label>
-                            <select class="form-control" id="id_category" name="id_category" required>
+                            <select class="form-control select2" id="id_category" name="id_category" required>
                             </select>
                         </div>
                         <div class="form-group">
@@ -229,8 +220,14 @@
                                 '<button class="btn btn-sm btn-danger btn-delete" data-id="' + row
                                 .id + '">Delete</button>';
 
-                            return editButton + ' ' + viewButton + ' ' + deleteButton;
+                            var buttonGroup = '<div class="d-flex justify-content-end">' +
+                                editButton + '<div class="mr-2"></div>' + viewButton +
+                                '<div class="mr-2"></div>' +
+                                deleteButton + '</div>';
+
+                            return buttonGroup;
                         }
+
                     }
                 ]
             });
@@ -238,26 +235,43 @@
     </script>
     <script>
         $(document).ready(function() {
+
+
+            // resetIdCategory();
+
             $('#addDataForm').on('submit', function(e) {
                 e.preventDefault();
 
                 var form = $(this);
-                var url = "{{ route('products.index') }}";
+                var url = "{{ route('products.store') }}";
 
                 $.ajax({
                     type: "POST",
                     url: url,
                     data: form.serialize(),
                     success: function(data) {
-                        alert("Data added successfully");
                         $('#addDataModal').modal('hide');
+                        $('#productTable').DataTable().ajax.reload();
                     },
                 });
             });
 
-            $(document).on('click', '#addDataButton', function() {
-                $('#addDataModal input').val('');
-                $('#addDataModal select').prop('selectedIndex', 0);
+            $(document).on('click', '#addDataButton', function(e) {
+                function resetIdCategory() {
+                $.ajax({
+                    url: "{{ route('categories.get') }}",
+                    method: 'GET',
+                    success: function(data) {
+                        $('#id_category').html('<option value="">Pilih Jenis Kategori</option>');
+                        $.each(data, function(key, value) {
+                            $('#id_category.form-control').append('<option value="' + value.id +
+                                '">' + value.nama_category + '</option>');
+                        });
+                    }
+                });
+            }
+                $('#addDataForm')[0].reset();
+                resetIdCategory();
                 $('#addDataModal').modal('show');
             });
         });
@@ -300,8 +314,6 @@
 
                         $('#deleteModal').modal('hide');
 
-                        alert(response.message);
-
                         $('#productTable').DataTable().ajax.reload();
                     },
                 });
@@ -310,10 +322,27 @@
     </script>
     <script>
         $(document).ready(function() {
+            // function resetIdCategory() {
+            //     $.ajax({
+            //         url: "{{ route('categories.get') }}",
+            //         method: 'GET',
+            //         success: function(data) {
+            //             $('#id_category.form-control').empty();
+            //             $.each(data, function(key, value) {
+            //                 $('#id_category.form-control').append('<option value="' + value.id +
+            //                     '">' + value.nama_category + '</option>');
+            //             });
+            //         }
+            //     });
+            // }
+
             $(document).on('click', '.btn-edit', function() {
                 var productId = $(this).data('id');
                 var editUrl = "{{ route('products.edit', ':id') }}".replace(':id', productId);
                 $('#editDataForm').data('product-id', productId);
+
+                // resetIdCategory();
+
                 $.ajax({
                     url: editUrl,
                     method: 'GET',
@@ -321,13 +350,12 @@
                         $('#editDataForm').attr('action',
                             "{{ route('products.update', ':id') }}".replace(':id',
                                 productId));
-                        $('#id_category.form-control').empty();
                         $.each(response.categories, function(index, category) {
                             var option = $('<option>', {
                                 value: category.id,
                                 text: category.nama_category
                             });
-
+                            console.log(option);
                             if (category.id == response.data.id_category) {
                                 option.attr('selected', 'selected');
                             }
@@ -342,8 +370,7 @@
                         $('#editDataModal').modal('show');
                     },
                     error: function(xhr, status, error) {
-                        console.error(xhr
-                        .responseText); // Check error message in the browser console
+                        console.error(xhr.responseText);
                     }
                 });
             });

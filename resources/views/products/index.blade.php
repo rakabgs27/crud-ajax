@@ -238,14 +238,32 @@
     </script>
     <script>
         $(document).ready(function() {
+            $('#addDataForm').on('submit', function(e) {
+                e.preventDefault();
+
+                var form = $(this);
+                var url = "{{ route('products.index') }}";
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(),
+                    success: function(data)
+                    {
+                        alert("Data added successfully");
+                        $('#addDataModal').modal('hide');
+                    },
+                });
+            });
+
             $(document).on('click', '#addDataButton', function() {
-                // Empty the form fields
                 $('#addDataModal input').val('');
                 $('#addDataModal select').prop('selectedIndex', 0);
-                $('#addDataModal').modal('show');   
+                $('#addDataModal').modal('show');
             });
         });
     </script>
+
     <script>
         $(document).on('click', '.btn-view', function() {
             var productId = $(this).data('id');

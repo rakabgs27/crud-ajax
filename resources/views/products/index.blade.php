@@ -298,6 +298,11 @@
                 $('.invalid-feedback').remove();
                 $('.is-invalid').removeClass('is-invalid');
             }
+
+            // Clear invalid feedback when modal is closed
+            $('#addDataModal').on('hidden.bs.modal', function() {
+                clearErrors();
+            });
         });
     </script>
     <script>

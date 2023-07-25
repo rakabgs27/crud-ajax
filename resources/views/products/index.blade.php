@@ -56,8 +56,15 @@
                     <form id="addDataForm" action="{{ route('products.store') }}" method="POST">
                         <div class="form-group">
                             <label for="nama_product">Nama Produk</label>
-                            <input type="text" class="form-control" id="nama_product" name="nama_product">
+                            <input type="text" class="form-control @error('nama_product') is-invalid @enderror"
+                                id="nama_product" name="nama_product">
+                            @error('nama_product')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
+
                         <div class="form-group">
                             <label for="id_category">Kategori</label>
                             <select class="form-control select2" id="id_category" name="id_category">
@@ -235,10 +242,6 @@
     </script>
     <script>
         $(document).ready(function() {
-
-
-            // resetIdCategory();
-
             $('#addDataForm').on('submit', function(e) {
                 e.preventDefault();
 
@@ -253,27 +256,48 @@
                         $('#addDataModal').modal('hide');
                         $('#productTable').DataTable().ajax.reload();
                     },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            var errors = xhr.responseJSON.errors;
+                            clearErrors(); // Clear previous errors
+                            $.each(errors, function(field, messages) {
+                                var input = $('[name="' + field + '"]');
+                                input.addClass('is-invalid');
+                                input.closest('.form-group').append(
+                                    '<div class="invalid-feedback">' + messages[0] +
+                                    '</div>');
+                            });
+                        }
+                    }
                 });
             });
 
             $(document).on('click', '#addDataButton', function(e) {
                 function resetIdCategory() {
-                $.ajax({
-                    url: "{{ route('categories.get') }}",
-                    method: 'GET',
-                    success: function(data) {
-                        $('#id_category').html('<option value="">Pilih Jenis Kategori</option>');
-                        $.each(data, function(key, value) {
-                            $('#id_category.form-control').append('<option value="' + value.id +
-                                '">' + value.nama_category + '</option>');
-                        });
-                    }
-                });
-            }
+                    $.ajax({
+                        url: "{{ route('categories.get') }}",
+                        method: 'GET',
+                        success: function(data) {
+                            $('#id_category').html(
+                                '<option value="">Pilih Jenis Kategori</option>');
+                            $.each(data, function(key, value) {
+                                $('#id_category').append('<option value="' + value.id +
+                                    '">' + value.nama_category + '</option>');
+                            });
+                        }
+                    });
+                }
+
                 $('#addDataForm')[0].reset();
                 resetIdCategory();
                 $('#addDataModal').modal('show');
+                clearErrors(); // Clear previous errors
             });
+
+            function clearErrors() {
+                $('.invalid-feedback').remove();
+                $('.is-invalid').removeClass('is-invalid');
+            }
         });
     </script>
     <script>

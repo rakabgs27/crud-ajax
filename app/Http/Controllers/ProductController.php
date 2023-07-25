@@ -69,7 +69,7 @@ class ProductController extends Controller
     {
         $product = new Product;
         $product->nama_product = $request->nama_product;
-        $product->id_category = $request->id_category; // Change from nama_category to id_category
+        $product->id_category = $request->id_category;
         $product->qty_product = $request->qty_product;
         $product->harga_product = $request->harga_product;
         $product->save();

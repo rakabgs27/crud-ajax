@@ -363,6 +363,9 @@
                         $('#editDataForm').attr('action',
                             "{{ route('products.update', ':id') }}".replace(':id',
                                 productId));
+
+                        $('#id_category.form-control').empty();
+
                         $.each(response.categories, function(index, category) {
                             var option = $('<option>', {
                                 value: category.id,

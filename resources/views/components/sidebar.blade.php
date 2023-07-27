@@ -13,6 +13,9 @@
                 <li>
                     <a class="nav-link " href="#">Input</a>
                 </li>
+                <li>
+                    <a class="nav-link " href="/ApiProduct/index">API</a>
+                </li>
             </ul>
         </li>
 </ul>

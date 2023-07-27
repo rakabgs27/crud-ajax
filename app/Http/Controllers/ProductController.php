@@ -26,7 +26,6 @@ class ProductController extends Controller
                     'products.harga_product as harga_product',
                     'categories.nama_category as nama_category'
                 );
-            $category = Category::all();
 
             if ($request->has('category_id')) {
                 $categoryId = $request->input('category_id');

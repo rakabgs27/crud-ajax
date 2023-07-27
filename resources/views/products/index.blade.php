@@ -28,7 +28,7 @@
                                 <form id="search" method="GET" action="{{ route('products.index') }}">
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
-                                            <label for="id_category">Categories By Product</label>
+                                            <label for="id_category">Product By Categories</label>
                                             <select class="form-control select2" id="id_category" name="id_category">
                                                 <option value="">Semua Kategori</option>
                                             </select>

@@ -18,6 +18,24 @@
                             <div class="float-right">
                                 <a href="#" id="addDataButton" class="btn btn-primary">Add New Data</a>
                             </div>
+                            <div class="mr-2"></div>
+                            <a class="btn btn-info btn-primary active search">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                                Search Category</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="show-search mb-3" style="display: none">
+                                <form id="search" method="GET" action="{{ route('products.index') }}">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="id_category">Categories By Product</label>
+                                            <select class="form-control select2" id="id_category" name="id_category">
+                                                <option value="">Semua Kategori</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -185,6 +203,38 @@
 
     <script>
         $(document).ready(function() {
+            $.ajax({
+                url: "{{ route('categories.get') }}",
+                method: 'GET',
+                success: function(data) {
+                    console.log(data);
+                    var selectDropdown = $('#id_category');
+                    selectDropdown.empty();
+                    selectDropdown.append('<option value="">All Categories</option>');
+                    $.each(data, function(index, category) {
+                        selectDropdown.append('<option value="' + category.id + '">' + category
+                            .nama_category + '</option>');
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+
+            function applyCategoryFilter(categoryId) {
+                var table = $('#productTable').DataTable();
+                var url = "{{ route('products.index') }}";
+                if (categoryId) {
+                    url += "?category_id=" + categoryId;
+                }
+                table.ajax.url(url).load();
+            }
+
+            $('#id_category').on('change', function() {
+                var categoryId = $(this).val();
+                applyCategoryFilter(categoryId);
+            });
+
             $('#productTable').DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -419,6 +469,26 @@
             e.preventDefault();
             $('#editDataForm').submit();
             $('#productTable').DataTable().ajax.reload();
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.import').click(function(event) {
+                event.stopPropagation();
+                $(".show-import").slideToggle("fast");
+                $(".show-search").hide();
+            });
+            $('.search').click(function(event) {
+                event.stopPropagation();
+                $(".show-search").slideToggle("fast");
+                $(".show-import").hide();
+            });
+            //ganti label berdasarkan nama file
+            $('#file-upload').change(function() {
+                var i = $(this).prev('label').clone();
+                var file = $('#file-upload')[0].files[0].name;
+                $(this).prev('label').text(file);
+            });
         });
     </script>
 @endpush

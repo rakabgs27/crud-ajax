@@ -26,6 +26,15 @@ class ProductController extends Controller
                     'products.harga_product as harga_product',
                     'categories.nama_category as nama_category'
                 );
+            $category = Category::all();
+
+            if ($request->has('category_id')) {
+                $categoryId = $request->input('category_id');
+
+                if (!empty($categoryId)) {
+                    $products->where('categories.id', '=', $categoryId);
+                }
+            }
 
             return DataTables::eloquent($products)
                 ->addColumn('DT_RowIndex', function ($product) {
@@ -74,7 +83,7 @@ class ProductController extends Controller
         $product->harga_product = $request->harga_product;
         $product->save();
 
-        if($request->ajax()){
+        if ($request->ajax()) {
             return response()->json(['success' => 'Product created successfully!'], 200);
         }
 

@@ -207,7 +207,7 @@
                 url: '/api/v1/category',
                 method: 'GET',
                 success: function(data) {
-                    var selectDropdown = $('#id_category.form-control.select2');
+                    var selectDropdown = $('#id_category');
                     selectDropdown.empty();
                     selectDropdown.append('<option value="">All Categories</option>');
                     $.each(data.data, function(index, category) {

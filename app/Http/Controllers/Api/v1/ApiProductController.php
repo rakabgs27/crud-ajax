@@ -19,7 +19,7 @@ class ApiProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Product::leftJoin('categories', 'products.id_category', '=', 'categories.id')
+        $query = Product::leftJoin('categories', 'products.id_category', '=', 'categories.id')
             ->select(
                 'products.id',
                 'products.nama_product as nama_product',
@@ -27,17 +27,21 @@ class ApiProductController extends Controller
                 'products.harga_product as harga_product',
                 'categories.nama_category as nama_category',
                 'categories.id as id_category'
-            )->paginate(5);
+            );
 
-            if ($request->has('category_id')) {
-                $categoryId = $request->input('category_id');
+        if ($request->has('category_id')) {
+            $categoryId = $request->input('category_id');
 
-                if (!empty($categoryId)) {
-                    $products->where('categories.id', '=', $categoryId);
-                }
+            if (!empty($categoryId)) {
+                $query->where('categories.id', '=', $categoryId);
             }
+        }
+
+        $products = $query->paginate(5);
+
         return ProductResource::collection($products);
     }
+
 
     public function getCategories()
     {

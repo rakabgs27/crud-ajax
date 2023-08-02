@@ -11,10 +11,19 @@
                 <span>Dashboard</span></a>
             <ul class="dropdown-menu">
                 <li>
-                    <a class="nav-link " href="#">Input</a>
+                    <a class="nav-link " href="/products">Product</a>
                 </li>
                 <li>
                     <a class="nav-link " href="/ApiProduct/index">API</a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item dropdown">
+            <a href="#" class="nav-link has-dropdown"><i class="fas fa-tachometer-alt"></i>
+                <span>Log Out</span></a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="nav-link " href="/logout">Logout</a>
                 </li>
             </ul>
         </li>

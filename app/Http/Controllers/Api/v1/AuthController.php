@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
@@ -8,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+
     public function login(LoginRequest $request)
     {
         $messageBerhasil = 'Login berhasil';
@@ -32,5 +34,30 @@ class AuthController extends Controller
             'data' => null,
             'message' => $messageGagal,
         ], 401);
+    }
+
+    public static function getApiToken($email, $password)
+    {
+        $messageGagal = 'Login gagal. Email atau password salah';
+
+        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+            $user = Auth::user();
+            $token = $user->createToken('API Token')->plainTextToken;
+
+            return [
+                'status' => true,
+                'data' => [
+                    'user' => new UserResource($user),
+                    'token' => $token,
+                ],
+                'message' => 'Login berhasil',
+            ];
+        }
+
+        return [
+            'status' => false,
+            'data' => null,
+            'message' => $messageGagal,
+        ];
     }
 }

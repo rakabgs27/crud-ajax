@@ -203,6 +203,15 @@
 
     <script>
         $(document).ready(function() {
+            var apiToken = '{{ session('api_token') }}';
+            console.log(apiToken);
+
+            $.ajaxSetup({
+                headers: {
+                    'Authorization': 'Bearer ' + apiToken
+                }
+            });
+
             $.ajax({
                 url: '/api/v1/category',
                 method: 'GET',
@@ -294,6 +303,14 @@
     </script>
     <script>
         $(document).ready(function() {
+            var apiToken = '{{ session('api_token') }}';
+            console.log(apiToken);
+
+            $.ajaxSetup({
+                headers: {
+                    'Authorization': 'Bearer ' + apiToken
+                }
+            });
             $('#addDataForm').on('submit', function(e) {
                 e.preventDefault();
 
@@ -369,29 +386,49 @@
         });
     </script>
     <script>
-        $(document).on('click', '.btn-view', function() {
-            var productId = $(this).data('id');
-            $.ajax({
-                url: '/api/v1/product/' + productId,
-                method: 'GET',
-                success: function(response) {
-                    var productData = response.data;
-                    console.log(productData.nama_category);
-                    var html = '<div>' +
-                        '<h5>Nama Produk: ' + productData.nama_product + '</h5>' +
-                        '<h5>Kategori: ' + productData.nama_category + '</h5>' +
-                        '<h5>Jumlah: ' + productData.qty_product + '</h5>' +
-                        '<h5>Harga: Rp. ' + productData.harga_product + '</h5>' +
-                        '</div>';
+        $(document).ready(function() {
+            var apiToken = '{{ session('api_token') }}';
+            console.log(apiToken);
 
-                    $('#viewDataContent').html(html);
-                    $('#viewDataModal').modal('show');
+            $.ajaxSetup({
+                headers: {
+                    'Authorization': 'Bearer ' + apiToken
                 }
+            });
+
+            $(document).on('click', '.btn-view', function() {
+                var productId = $(this).data('id');
+                $.ajax({
+                    url: '/api/v1/product/' + productId,
+                    method: 'GET',
+                    success: function(response) {
+                        var productData = response.data;
+                        console.log(productData.nama_category);
+                        var html = '<div>' +
+                            '<h5>Nama Produk: ' + productData.nama_product + '</h5>' +
+                            '<h5>Kategori: ' + productData.nama_category + '</h5>' +
+                            '<h5>Jumlah: ' + productData.qty_product + '</h5>' +
+                            '<h5>Harga: Rp. ' + productData.harga_product + '</h5>' +
+                            '</div>';
+
+                        $('#viewDataContent').html(html);
+                        $('#viewDataModal').modal('show');
+                    }
+                });
             });
         });
     </script>
     <script>
         $(document).ready(function() {
+            var apiToken = '{{ session('api_token') }}';
+            console.log(apiToken);
+
+            $.ajaxSetup({
+                headers: {
+                    'Authorization': 'Bearer ' + apiToken
+                }
+            });
+
             $(document).on('click', '.btn-delete', function() {
                 var productId = $(this).data('id');
                 $('#deleteButton').data('product-id', productId);
@@ -415,6 +452,15 @@
     </script>
     <script>
         $(document).ready(function() {
+            var apiToken = '{{ session('api_token') }}';
+            console.log(apiToken);
+
+            $.ajaxSetup({
+                headers: {
+                    'Authorization': 'Bearer ' + apiToken
+                }
+            });
+
             $(document).on('click', '.btn-edit', function() {
                 var productId = $(this).data('id');
                 var editUrl = '/api/v1/product/' + productId;
@@ -467,6 +513,15 @@
     </script>
     <script>
         $(document).ready(function() {
+            var apiToken = '{{ session('api_token') }}';
+            console.log(apiToken);
+
+            $.ajaxSetup({
+                headers: {
+                    'Authorization': 'Bearer ' + apiToken
+                }
+            });
+
             $('#editDataForm').on('submit', function(e) {
                 e.preventDefault();
 

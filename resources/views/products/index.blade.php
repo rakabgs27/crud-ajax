@@ -328,16 +328,17 @@
                         url: "{{ route('categories.get') }}",
                         method: 'GET',
                         success: function(data) {
-                            $('#id_category').html(
+                            $('#id_category.form-control.select2').html(
                                 '<option value="">Pilih Jenis Kategori</option>');
                             $.each(data, function(key, value) {
-                                $('#id_category').append('<option value="' + value.id +
+                                console.log(value.nama_category);
+                                $('#id_category.form-control.select2').append('<option value="' + value.id +
                                     '">' + value.nama_category + '</option>');
                             });
                         }
                     });
                 }
-
+                $('#id_category.form-control.select2').empty();
                 $('#addDataForm')[0].reset();
                 resetIdCategory();
                 $('#addDataModal').modal('show');

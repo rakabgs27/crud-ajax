@@ -1,5 +1,4 @@
 const mix = require('laravel-mix');
 
-mix.js('resources/js/app.js', 'public/js').minify('public/js/app.js');
-
-mix.postCss('resources/css/app.css', 'public/css').minify('public/css/app.css');
+mix.minify('resources/js/stisla.js', 'public/assets/js/stisla.min.js');
+mix.minify('resources/css/style.css', 'public/assets/css/style.min.css');

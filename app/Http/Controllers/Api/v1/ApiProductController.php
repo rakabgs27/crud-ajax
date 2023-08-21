@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Models\Product;
 use App\Http\Requests\StoreproductRequest;
-use App\Http\Requests\UpdateproductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use DataTables;

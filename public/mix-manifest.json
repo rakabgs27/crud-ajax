@@ -1,4 +1,5 @@
 {
     "/assets/js/stisla.min.js": "/assets/js/stisla.min.js",
-    "/assets/css/style.min.css": "/assets/css/style.min.css"
+    "/assets/js/scripts.min.js": "/assets/js/scripts.min.js",
+    "/publiccss/app.min.css": "/publiccss/app.min.css"
 }
